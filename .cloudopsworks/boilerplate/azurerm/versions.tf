@@ -11,9 +11,9 @@ terraform {
   required_version = ">= 1.7"
   # Complete with required providers for the module
   required_providers {
-    mongodbatlas = {
-      source  = "mongodb/mongodbatlas"
-      version = "~> 2.1"
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.59"
     }
   }
 }

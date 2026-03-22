@@ -1,30 +1,189 @@
-name: Terraform Transit Gateway Module
+name: Terraform MongoDB Atlas Network Container Module
 #logo: logo/logo.jpg
+badges:
+  - name: Latest Release
+    image: https://img.shields.io/github/release/cloudopsworks/terraform-module-mongoatlas-network.svg?style=for-the-badge
+    url: https://github.com/cloudopsworks/terraform-module-mongoatlas-network/releases/latest
+  - name: Last Updated
+    image: https://img.shields.io/github/last-commit/cloudopsworks/terraform-module-mongoatlas-network.svg?style=for-the-badge
+    url: https://github.com/cloudopsworks/terraform-module-mongoatlas-network/commits
 
 license: "APACHE2"
 
 copyrights:
   - name: "Cloud Ops Works LLC"
-    url: "https://cloudops.works"
-    year: "2024"
+    url: "https://cloudopsworks.co"
+    year: "2026"
 
-github_repo: cloudopsworks/terraform-module-aws-vpc-setup
+github_repo: cloudopsworks/terraform-module-mongoatlas-network
 
 description: |-
-  VPC Module for setting up transit gateway with ResourceAccessMananger support.
+  Terraform module for provisioning MongoDB Atlas Network Containers, providing the foundational
+  network isolation layer for Atlas clusters. Supports AWS, GCP, and Azure cloud providers with a
+  unified interface. Designed for hub-and-spoke network architectures and follows the CloudOps Works
+  standard organization/environment variable convention.
 
 # Introduction to the project
-#introduction: |-
-#  This is an introduction.
+introduction: |-
+  This module creates a [MongoDB Atlas Network Container](https://www.mongodb.com/docs/atlas/reference/api-resources-spec/v2/#tag/Network-Peering/operation/createPeeringContainer)
+  — the prerequisite resource for setting up VPC/VNet peering between Atlas clusters and your cloud provider network.
+
+  **Key capabilities:**
+
+  - **Multi-cloud support**: A single module interface handles AWS, GCP, and AZURE network containers
+    via the `settings.provider` attribute.
+  - **Project resolution**: Supply either a `project_id` directly or a `project_name` for automatic
+    lookup — the module resolves the correct Atlas project ID either way.
+  - **Hub/spoke aware**: The `is_hub` and `spoke_def` variables integrate with the CloudOps Works
+    naming and tagging conventions, generating consistent `system_name` locals used across the stack.
+  - **Standardised tagging**: Inherits organisation/environment tags from the `cloudopsworks/tags/local`
+    module and merges any additional tags supplied via `extra_tags`.
+
+  **Outputs** expose all provider-specific container attributes (VPC ID, GCP project/network, Azure
+  subscription/VNet) so downstream peering modules can reference them directly.
 
 # How to use this project
-#usage: |-
+usage: |-
+  ### AWS Example (Terragrunt)
+
+  ```hcl
+  terraform {
+    source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.0"
+  }
+
+  inputs = {
+    # Hub/spoke topology
+    is_hub   = false        # (Optional) Is this a hub or spoke configuration? Default: false
+    spoke_def = "001"       # (Optional) Spoke ID Number, must be a 3 digit number. Default: "001"
+
+    # Organisation details
+    org = {
+      organization_name = "acme"       # (Required) The name of the organisation
+      organization_unit = "platform"   # (Required) The unit within the organisation
+      environment_type  = "production" # (Required) The type of environment (e.g. production, staging)
+      environment_name  = "prod"       # (Required) The name of the environment
+    }
+
+    # MongoDB Atlas project (use one of project_id or project_name)
+    project_id   = ""              # (Optional) The ID of the Atlas project. Default: "".
+    project_name = "my-atlas-proj" # (Optional) Atlas project name for ID lookup. Default: "".
+
+    # Network container settings
+    settings = {
+      cidr_block = "10.0.0.0/21" # (Required) IPv4 CIDR block for the Atlas network container.
+      provider   = "AWS"          # (Required) Cloud provider: "AWS", "GCP", or "AZURE".
+      region     = "us-east-1"   # (Optional) AWS region. Default: "us-east-1".
+    }
+
+    # Additional resource tags
+    extra_tags = {                # (Optional) Extra tags to add to resources. Default: {}
+      CostCenter = "engineering"
+      Team       = "platform"
+    }
+  }
+  ```
+
+  ### GCP Example (Terragrunt)
+
+  ```hcl
+  terraform {
+    source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.0"
+  }
+
+  inputs = {
+    is_hub    = true
+    spoke_def = "001"
+
+    org = {
+      organization_name = "acme"
+      organization_unit = "platform"
+      environment_type  = "production"
+      environment_name  = "prod"
+    }
+
+    project_name = "my-atlas-proj"
+
+    settings = {
+      cidr_block = "10.8.0.0/18"           # (Required) IPv4 CIDR block for the Atlas network container.
+      provider   = "GCP"                    # (Required) Cloud provider: "AWS", "GCP", or "AZURE".
+      regions    = ["US_EAST_4", "US_CENTRAL1"] # (Optional) GCP regions list (GCP only).
+    }
+  }
+  ```
+
+  ### Azure Example (Terragrunt)
+
+  ```hcl
+  terraform {
+    source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.0"
+  }
+
+  inputs = {
+    is_hub    = false
+    spoke_def = "002"
+
+    org = {
+      organization_name = "acme"
+      organization_unit = "platform"
+      environment_type  = "production"
+      environment_name  = "prod"
+    }
+
+    project_id = "64a1b2c3d4e5f6a7b8c9d0e1"
+
+    settings = {
+      cidr_block = "10.16.0.0/21" # (Required) IPv4 CIDR block for the Atlas network container.
+      provider   = "AZURE"         # (Required) Cloud provider: "AWS", "GCP", or "AZURE".
+      region     = "US_EAST_2"    # (Optional) Azure region (uppercase with underscores). Default: "us-east-1".
+    }
+  }
+  ```
 
 # Example usage
-#examples: |-
+examples: |-
+  See the `usage` section above for AWS, GCP, and Azure Terragrunt examples.
+
+  **Outputs available after apply:**
+
+  | Output | Description |
+  |--------|-------------|
+  | `network_container_id` | Atlas network container ID |
+  | `network_container_provisioned` | Whether the container has been provisioned |
+  | `network_container_aws_region` | AWS region of the container |
+  | `network_container_aws_vpc_id` | AWS VPC ID associated with the container |
+  | `network_container_gcp_project_id` | GCP project ID of the container |
+  | `network_container_gcp_network_name` | GCP network name of the container |
+  | `network_container_azure_region` | Azure region of the container |
+  | `network_container_azure_subscription_id` | Azure subscription ID of the container |
+  | `network_container_azure_vnet_name` | Azure VNet name of the container |
 
 # How to get started quickly
-#quickstart: |-
+quickstart: |-
+  1. **Add the module** to your Terragrunt stack:
+
+  ```hcl
+  terraform {
+    source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.0"
+  }
+
+  inputs = {
+    org = {
+      organization_name = "myorg"
+      organization_unit = "ops"
+      environment_type  = "dev"
+      environment_name  = "dev"
+    }
+    project_name = "my-atlas-project"
+    settings = {
+      cidr_block = "10.0.0.0/21"
+      provider   = "AWS"
+      region     = "us-east-1"
+    }
+  }
+  ```
+
+  2. **Run** `terragrunt apply` — the network container is created in your Atlas project.
+  3. **Reference outputs** in your peering module using `dependency` blocks.
 
 include:
   - "docs/targets.md"
