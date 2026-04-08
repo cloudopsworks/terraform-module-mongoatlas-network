@@ -18,5 +18,5 @@ resource "mongodbatlas_network_container" "this" {
   provider_name    = var.settings.provider
   region_name      = var.settings.provider == "AWS" ? upper(replace(try(var.settings.region, "us-east-1"), "-", "_")) : null
   regions          = var.settings.provider == "GCP" ? var.settings.regions : null
-  region           = var.settings.provider == "AZURE" ? upper(replace(try(var.settings.region, "us-east-1"), "-", "_")) : null
+  region           = var.settings.provider == "AZURE" ? upper(replace(try(var.settings.region, "us_east"), "-", "_")) : null
 }

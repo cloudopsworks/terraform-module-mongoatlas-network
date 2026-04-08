@@ -76,13 +76,13 @@ Instead pin to the release tag (e.g. `?ref=vX.Y.Z`) of one of our [latest releas
 
 ```hcl
 terraform {
-  source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.0"
+  source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.1"
 }
 
 inputs = {
   # Hub/spoke topology
-  is_hub   = false        # (Optional) Is this a hub or spoke configuration? Default: false
-  spoke_def = "001"       # (Optional) Spoke ID Number, must be a 3 digit number. Default: "001"
+  is_hub    = false   # (Optional) Is this a hub or spoke configuration? Default: false
+  spoke_def = "001"   # (Optional) Spoke ID Number, must be a 3-digit string. Default: "001"
 
   # Organisation details
   org = {
@@ -92,15 +92,17 @@ inputs = {
     environment_name  = "prod"       # (Required) The name of the environment
   }
 
-  # MongoDB Atlas project (use one of project_id or project_name)
-  project_id   = ""              # (Optional) The ID of the Atlas project. Default: "".
-  project_name = "my-atlas-proj" # (Optional) Atlas project name for ID lookup. Default: "".
+  # MongoDB Atlas project — supply one of project_id or project_name
+  project_id   = ""              # (Optional) Direct Atlas project ID. Overrides project_name. Default: "".
+  project_name = "my-atlas-proj" # (Optional) Atlas project name for automatic ID lookup. Default: "".
 
   # Network container settings
   settings = {
     cidr_block = "10.0.0.0/21" # (Required) IPv4 CIDR block for the Atlas network container.
     provider   = "AWS"          # (Required) Cloud provider: "AWS", "GCP", or "AZURE".
-    region     = "us-east-1"   # (Optional) AWS region. Default: "us-east-1".
+    region     = "us-east-1"   # (Optional) AWS region in lowercase-hyphenated format.
+                                #            Module converts to uppercase-underscore for the Atlas API.
+                                #            Example: "us-east-1" → API value "US_EAST_1". Default: "us-east-1".
   }
 
   # Additional resource tags
@@ -115,7 +117,7 @@ inputs = {
 
 ```hcl
 terraform {
-  source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.0"
+  source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.1"
 }
 
 inputs = {
@@ -132,9 +134,10 @@ inputs = {
   project_name = "my-atlas-proj"
 
   settings = {
-    cidr_block = "10.8.0.0/18"           # (Required) IPv4 CIDR block for the Atlas network container.
-    provider   = "GCP"                    # (Required) Cloud provider: "AWS", "GCP", or "AZURE".
-    regions    = ["US_EAST_4", "US_CENTRAL1"] # (Optional) GCP regions list (GCP only).
+    cidr_block = "10.8.0.0/18"                    # (Required) IPv4 CIDR block for the Atlas network container.
+    provider   = "GCP"                             # (Required) Cloud provider: "AWS", "GCP", or "AZURE".
+    regions    = ["US_EAST_4", "US_CENTRAL1"]      # (Optional) GCP regions list — uppercase-underscore format.
+                                                   #            Passed directly to the Atlas API (no transformation).
   }
 }
 ```
@@ -143,7 +146,7 @@ inputs = {
 
 ```hcl
 terraform {
-  source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.0"
+  source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.1"
 }
 
 inputs = {
@@ -162,7 +165,9 @@ inputs = {
   settings = {
     cidr_block = "10.16.0.0/21" # (Required) IPv4 CIDR block for the Atlas network container.
     provider   = "AZURE"         # (Required) Cloud provider: "AWS", "GCP", or "AZURE".
-    region     = "US_EAST_2"    # (Optional) Azure region (uppercase with underscores). Default: "us-east-1".
+    region     = "us-east-2"    # (Optional) Azure region in lowercase-hyphenated format.
+                                 #            Module converts to uppercase-underscore for the Atlas API.
+                                 #            Example: "us-east-2" → API value "US_EAST_2". Default: "us-east-2".
   }
 }
 ```
@@ -173,7 +178,7 @@ inputs = {
 
 ```hcl
 terraform {
-  source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.0"
+  source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.1"
 }
 
 inputs = {
@@ -223,11 +228,7 @@ Available targets:
   help                                Help screen
   help/all                            Display help for all targets
   help/short                          This help short screen
-  init/aws                            Initialize the project for a specific cloud provider: AWS
-  init/azurerm                        Initialize the project for a specific cloud provider: Azure RM
-  init/gcp                            Initialize the project for a specific cloud provider: GCP
-  init/github                         Initialize the project for a specific cloud provider: Github Provider
-  init/mongodb                        Initialize the project for a specific cloud provider: MongoDB Atlas Provider
+  init/%                              Initialize the project for a specific cloud provider: %S
   lint                                Lint terraform/opentofu code
   tag                                 Tag the current version
 
