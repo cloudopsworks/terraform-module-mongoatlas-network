@@ -76,7 +76,7 @@ Instead pin to the release tag (e.g. `?ref=vX.Y.Z`) of one of our [latest releas
 
 ```hcl
 terraform {
-  source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.6.5"
+  source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.1"
 }
 
 inputs = {
@@ -117,7 +117,7 @@ inputs = {
 
 ```hcl
 terraform {
-  source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.6.5"
+  source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.1"
 }
 
 inputs = {
@@ -146,7 +146,7 @@ inputs = {
 
 ```hcl
 terraform {
-  source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.6.5"
+  source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.1"
 }
 
 inputs = {
@@ -178,7 +178,7 @@ inputs = {
 
 ```hcl
 terraform {
-  source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.6.5"
+  source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.1"
 }
 
 inputs = {

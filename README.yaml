@@ -48,7 +48,7 @@ usage: |-
 
   ```hcl
   terraform {
-    source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.6.5"
+    source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.1"
   }
 
   inputs = {
@@ -89,7 +89,7 @@ usage: |-
 
   ```hcl
   terraform {
-    source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.6.5"
+    source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.1"
   }
 
   inputs = {
@@ -118,7 +118,7 @@ usage: |-
 
   ```hcl
   terraform {
-    source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.6.5"
+    source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.1"
   }
 
   inputs = {
@@ -168,7 +168,7 @@ quickstart: |-
 
   ```hcl
   terraform {
-    source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.6.5"
+    source = "git::https://github.com/cloudopsworks/terraform-module-mongoatlas-network.git?ref=v1.0.1"
   }
 
   inputs = {
