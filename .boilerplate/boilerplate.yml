@@ -9,24 +9,24 @@
 # Terragrunt Boilerplate Configuration
 variables:
   # Generic Boilerplate Variables Setup
-  - name: organization_name
+  - name: is_hub
     order: 0
     description: "Is this a hub configuration?"
     type: bool
     default: false
   - name: tags
-    order: 6
+    order: 1
     description: "Tags"
     type: map
     default: {}
   # End - Generic Boilerplate Variables Setup
   - name: project
-    order: 4
+    order: 2
     description: "Project Dependency is enabled?"
     type: bool
     default: true
   - name: project_path
-    order: 5
+    order: 3
     description: "Project Path, required if project is true"
     type: string
     default: "../project"
