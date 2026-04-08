@@ -1,4 +1,38 @@
-# Module configuration
+##
+# Module-specific inputs for the MongoDB Atlas Network Container module.
+# These values are loaded by terragrunt.hcl as local.local_vars.
+#
+##
+
+# project_id: ""   # (Optional) The ID of the MongoDB Atlas project where the network container
+#                  #            will be created. When set, project_name is ignored.
+#                  #            Default: "" (project_name is used for lookup instead).
 project_id: ""
+
+# project_name: "" # (Optional) The name of the MongoDB Atlas project used to look up the
+#                  #            project ID automatically. Only used when project_id is not set.
+#                  #            Default: "".
 project_name: ""
-settings: {}
+
+# settings:        # (Required) Network container configuration block.
+#   cidr_block: "10.0.0.0/21"  # (Required) IPv4 CIDR block for the Atlas network container.
+#                               #            Must be a valid CIDR (/21 or larger recommended).
+#                               #            Example: "10.0.0.0/21"
+#   provider: "AWS"             # (Required) Cloud provider for the network container.
+#                               #            Possible values: "AWS", "GCP", "AZURE".
+#   region: "us-east-1"        # (Optional) Cloud provider region for AWS or AZURE containers,
+#                               #            in lowercase-hyphenated format. The module
+#                               #            transforms it to uppercase-underscore for the Atlas API.
+#                               #            AWS example:   "us-east-1"  → API value: "US_EAST_1"
+#                               #            AZURE example: "us-east-2"  → API value: "US_EAST_2"
+#                               #            When omitted, falls back to region-inputs.yaml value.
+#   regions: []                 # (Optional) List of GCP regions for the network container.
+#                               #            Only applicable when provider is "GCP".
+#                               #            Values must already be in uppercase-underscore format.
+#                               #            Example: ["US_EAST_4", "US_CENTRAL1"]
+settings:
+  cidr_block: ""  # (Required) IPv4 CIDR block for the Atlas network container
+  provider: ""    # (Required) Cloud provider: "AWS", "GCP", or "AZURE"
+  # region: ""    # (Optional) AWS or AZURE region (lowercase-hyphenated, e.g. "us-east-1")
+  #               #            Overrides the value from region-inputs.yaml when set.
+  # regions: []   # (Optional) GCP regions list — only used when provider is "GCP"
