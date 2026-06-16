@@ -244,7 +244,7 @@ Available targets:
 
 | Name | Version |
 |------|---------|
-| <a name="provider_mongodbatlas"></a> [mongodbatlas](#provider\_mongodbatlas) | 1.21.4 |
+| <a name="provider_mongodbatlas"></a> [mongodbatlas](#provider\_mongodbatlas) | ~> 2.1 |
 
 ## Modules
 
